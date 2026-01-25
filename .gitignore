@@ -1,0 +1,27 @@
+# Build artifacts
+*.o
+*.a
+*.dylib
+*.framework
+*.app
+*.dSYM
+
+# GNUStep
+obj/
+*.m.depends
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+build/
+
+# IDE
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Documentation
+html/
+latex/
