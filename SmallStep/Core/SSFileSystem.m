@@ -6,6 +6,10 @@
 #import "SSFileSystem.h"
 #import "SSPlatform.h"
 
+#if defined(WINOBJC) || defined(_WIN32)
+#import "SSWindowsPlatform.h"
+#endif
+
 @implementation SSFileSystem
 
 + (instancetype)sharedFileSystem {
@@ -24,6 +28,18 @@
     // On Linux, use ~/Documents or create it
     NSString *homeDir = NSHomeDirectory();
     NSString *documentsDir = [homeDir stringByAppendingPathComponent:@"Documents"];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:documentsDir]) {
+        [fileManager createDirectoryAtPath:documentsDir
+                withIntermediateDirectories:YES
+                                 attributes:nil
+                                      error:nil];
+    }
+    return documentsDir;
+#elif SS_PLATFORM_WINDOWS
+    // On Windows, use Documents folder
+    NSString *documentsDir = [SSWindowsPlatform windowsDocumentsPath];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if (![fileManager fileExistsAtPath:documentsDir]) {
@@ -58,13 +74,29 @@
                                       error:nil];
     }
     return cacheHome;
+#elif SS_PLATFORM_WINDOWS
+    // On Windows, use LocalAppData for cache
+    NSString *cacheDir = [SSWindowsPlatform windowsLocalAppDataPath];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:cacheDir]) {
+        [fileManager createDirectoryAtPath:cacheDir
+                withIntermediateDirectories:YES
+                                 attributes:nil
+                                      error:nil];
+    }
+    return cacheDir;
 #else
     return [self temporaryDirectory];
 #endif
 }
 
 - (NSString *)temporaryDirectory {
+#if SS_PLATFORM_WINDOWS
+    return [SSWindowsPlatform windowsTempPath];
+#else
     return NSTemporaryDirectory();
+#endif
 }
 
 - (NSString *)applicationSupportDirectory {
@@ -103,6 +135,25 @@
                                       error:nil];
     }
     return dataHome;
+#elif SS_PLATFORM_WINDOWS
+    // On Windows, use AppData\Roaming for application support
+    NSString *appDataPath = [SSWindowsPlatform windowsAppDataPath];
+    
+    // Append app name/bundle identifier
+    NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
+    if (!bundleId) {
+        bundleId = @"SmallStep";
+    }
+    NSString *appDir = [appDataPath stringByAppendingPathComponent:bundleId];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:appDir]) {
+        [fileManager createDirectoryAtPath:appDir
+                withIntermediateDirectories:YES
+                                 attributes:nil
+                                      error:nil];
+    }
+    return appDir;
 #else
     return [self documentsDirectory];
 #endif

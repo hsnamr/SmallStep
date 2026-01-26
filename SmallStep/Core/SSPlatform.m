@@ -11,6 +11,8 @@
     #define SS_PLATFORM_IOS 1
 #elif defined(__GNUSTEP__) || defined(__linux__)
     #define SS_PLATFORM_LINUX 1
+#elif defined(WINOBJC) || defined(_WIN32)
+    #define SS_PLATFORM_WINDOWS 1
 #endif
 
 @implementation SSPlatform
@@ -39,6 +41,10 @@
     return [self currentPlatform] == SSPlatformTypeLinux;
 }
 
++ (BOOL)isWindows {
+    return [self currentPlatform] == SSPlatformTypeWindows;
+}
+
 + (NSString *)platformName {
     switch ([self currentPlatform]) {
         case SSPlatformTypemacOS:
@@ -62,6 +68,9 @@
 #elif SS_PLATFORM_LINUX
     // For Linux, we could read from /etc/os-release or similar
     return @"Linux (GNUStep)";
+#elif SS_PLATFORM_WINDOWS
+    // For Windows, we could use GetVersionEx or similar
+    return @"Windows (WinObjC)";
 #else
     return @"Unknown";
 #endif

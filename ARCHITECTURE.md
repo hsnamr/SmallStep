@@ -2,7 +2,7 @@
 
 ## Overview
 
-SmallStep is a cross-platform abstraction layer designed to provide a unified API for common platform-specific operations across macOS, iOS, and Linux (GNUStep).
+SmallStep is a cross-platform abstraction layer designed to provide a unified API for common platform-specific operations across macOS, iOS, Linux (GNUStep), and Windows (WinObjC).
 
 ## Design Goals
 
@@ -25,8 +25,10 @@ SmallStep/
     │   └── SSMacOSPlatform.h/m   # macOS-specific utilities
     ├── iOS/
     │   └── SSiOSPlatform.h/m     # iOS-specific utilities
-    └── Linux/
-        └── SSLinuxPlatform.h/m    # Linux/GNUStep-specific utilities
+    ├── Linux/
+    │   └── SSLinuxPlatform.h/m    # Linux/GNUStep-specific utilities
+    └── Windows/
+        └── SSWindowsPlatform.h/m  # Windows/WinObjC-specific utilities
 ```
 
 ## Core Components
@@ -52,6 +54,7 @@ Each platform has its own module for platform-specific features:
 - **macOS**: Sandbox detection, AppKit-specific paths
 - **iOS**: App extension detection, shared containers
 - **Linux**: XDG Base Directory support
+- **Windows**: Windows-specific folder paths (Documents, AppData, LocalAppData)
 
 ## Platform-Specific Behavior
 
@@ -95,6 +98,7 @@ SmallStep is designed to be extended:
 
 - **macOS/iOS**: Framework (Xcode or CocoaPods)
 - **Linux**: Library (GNUStep makefiles)
+- **Windows**: Framework/Library (WinObjC/Visual Studio)
 
 ## Testing
 

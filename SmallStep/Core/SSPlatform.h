@@ -13,7 +13,8 @@ typedef NS_ENUM(NSInteger, SSPlatformType) {
     SSPlatformTypeUnknown = 0,
     SSPlatformTypemacOS,
     SSPlatformTypeiOS,
-    SSPlatformTypeLinux
+    SSPlatformTypeLinux,
+    SSPlatformTypeWindows
 };
 
 /// Platform information
@@ -30,6 +31,9 @@ typedef NS_ENUM(NSInteger, SSPlatformType) {
 
 /// Check if running on Linux (GNUStep)
 + (BOOL)isLinux;
+
+/// Check if running on Windows (WinObjC)
++ (BOOL)isWindows;
 
 /// Platform name string
 + (NSString *)platformName;

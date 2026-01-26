@@ -1,6 +1,6 @@
 # SmallStep
 
-A cross-platform abstraction layer for Objective-C applications targeting macOS, iOS, and Linux (GNUStep).
+A cross-platform abstraction layer for Objective-C applications targeting macOS, iOS, Linux (GNUStep), and Windows (WinObjC).
 
 ## Overview
 
@@ -11,6 +11,7 @@ SmallStep provides a unified API for common platform-specific operations, allowi
 - **macOS** (Cocoa/AppKit)
 - **iOS** (UIKit)
 - **Linux** (GNUStep)
+- **Windows** (WinObjC)
 
 ## Features
 
@@ -23,6 +24,7 @@ SmallStep provides a unified API for common platform-specific operations, allowi
 - Platform-appropriate directory handling:
   - macOS/iOS: Uses standard Cocoa directories
   - Linux: Respects XDG Base Directory Specification
+  - Windows: Uses Windows standard folders (Documents, AppData, LocalAppData)
 - Cross-platform file operations
 
 ## Installation
@@ -64,6 +66,8 @@ if ([SSPlatform isMacOS]) {
     NSLog(@"Running on iOS");
 } else if ([SSPlatform isLinux]) {
     NSLog(@"Running on Linux");
+} else if ([SSPlatform isWindows]) {
+    NSLog(@"Running on Windows");
 }
 
 // Get platform info
@@ -125,6 +129,19 @@ NSString *xdgCache = [SSLinuxPlatform xdgCacheHome];
 #endif
 ```
 
+#### Windows
+
+```objc
+#if defined(WINOBJC) || defined(_WIN32)
+#import <SmallStep/SSWindowsPlatform.h>
+
+NSString *documents = [SSWindowsPlatform windowsDocumentsPath];
+NSString *localAppData = [SSWindowsPlatform windowsLocalAppDataPath];
+NSString *appData = [SSWindowsPlatform windowsAppDataPath];
+NSString *temp = [SSWindowsPlatform windowsTempPath];
+#endif
+```
+
 ## Architecture
 
 ```
@@ -160,6 +177,10 @@ SmallStep/
 ```bash
 make
 ```
+
+### Windows (WinObjC)
+
+Build using Visual Studio with WinObjC SDK integration.
 
 ## License
 
