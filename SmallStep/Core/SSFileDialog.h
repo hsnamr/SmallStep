@@ -6,7 +6,16 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 #import <AppKit/AppKit.h>
+#elif TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#import <PhotosUI/PhotosUI.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+#elif TARGET_OS_WIN32
+#import <UIKit/UIKit.h>
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,7 +26,11 @@ typedef NS_ENUM(NSInteger, SSFileDialogResult) {
 };
 
 /// Cross-platform file dialog abstraction
-@interface SSFileDialog : NSObject {
+@interface SSFileDialog : NSObject
+#if TARGET_OS_IPHONE
+<PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIDocumentPickerDelegate>
+#endif
+{
     NSArray *_allowedFileTypes;
     BOOL _allowsMultipleSelection;
     BOOL _canChooseDirectories;
@@ -56,11 +69,11 @@ typedef NS_ENUM(NSInteger, SSFileDialogResult) {
 /// @return Array of selected URLs, or nil if cancelled
 - (NSArray *)showModal;
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-/// File dialog completion handler (macOS only)
+#if __has_feature(blocks) || (TARGET_OS_IPHONE && __clang__)
+/// File dialog completion handler
 typedef void (^SSFileDialogCompletionHandler)(SSFileDialogResult result, NSArray *urls);
 
-/// Show the dialog and call completion handler (macOS only)
+/// Show the dialog and call completion handler (async, all platforms)
 /// @param completionHandler Block called when dialog is dismissed
 - (void)showWithCompletionHandler:(SSFileDialogCompletionHandler)completionHandler;
 #endif
