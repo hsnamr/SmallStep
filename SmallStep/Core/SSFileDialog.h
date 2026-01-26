@@ -22,10 +22,15 @@ typedef NS_ENUM(NSInteger, SSFileDialogResult) {
     BOOL _allowsMultipleSelection;
     BOOL _canChooseDirectories;
     BOOL _canChooseFiles;
+    BOOL _canCreateDirectories;
+    BOOL _isSaveDialog;
 }
 
 /// Create a file open dialog
 + (instancetype)openDialog;
+
+/// Create a file save dialog
++ (instancetype)saveDialog;
 
 /// Set allowed file types
 /// @param fileTypes Array of file extensions (e.g., @[@"jpg", @"png"])
@@ -42,6 +47,10 @@ typedef NS_ENUM(NSInteger, SSFileDialogResult) {
 /// Set whether files can be selected
 /// @param canChooseFiles Whether files can be chosen
 - (void)setCanChooseFiles:(BOOL)canChooseFiles;
+
+/// Set whether directories can be created (for save dialogs)
+/// @param canCreateDirectories Whether directories can be created
+- (void)setCanCreateDirectories:(BOOL)canCreateDirectories;
 
 /// Show the dialog modally (synchronous)
 /// @return Array of selected URLs, or nil if cancelled
