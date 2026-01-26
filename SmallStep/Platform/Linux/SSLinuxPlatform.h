@@ -5,7 +5,7 @@
 //  Linux (GNUStep) specific platform implementations
 
 #import <Foundation/Foundation.h>
-#import "SSPlatform.h"
+#import "../../Core/SSPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
