@@ -21,6 +21,9 @@
 // File dialogs
 #import "SSFileDialog.h"
 
+// Application menu
+#import "SSApplicationMenu.h"
+
 // Version
 FOUNDATION_EXPORT double SmallStepVersionNumber;
 FOUNDATION_EXPORT const unsigned char SmallStepVersionString[];
