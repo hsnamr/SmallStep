@@ -186,6 +186,8 @@
     [floatingPanel setLevel:NSFloatingWindowLevel];
     [floatingPanel setHidesOnDeactivate:NO];
     [floatingPanel setBecomesKeyOnlyIfNeeded:YES];
+    // Make sure panel is released when closed
+    [floatingPanel setReleasedWhenClosed:NO];
     
     // Create scroll view
     NSView *contentView = [floatingPanel contentView];
@@ -241,6 +243,10 @@
     
     [scrollView setDocumentView:containerView];
     [contentView addSubview:scrollView];
+    
+    // Ensure panel is properly configured for GNUstep
+    // Panel should be visible but not steal focus
+    [floatingPanel setWorksWhenModal:YES];
 #endif
 }
 
@@ -395,8 +401,14 @@
 - (void)showMenu {
     if ([SSPlatform isLinux]) {
 #if defined(__GNUSTEP__) || defined(__linux__)
-        [floatingPanel orderFront:nil];
-        [self updateMenuStates];
+        if (floatingPanel) {
+            // Make sure panel is visible and on top
+            [floatingPanel orderFront:nil];
+            [floatingPanel makeKeyAndOrderFront:nil];
+            // Ensure it stays on top
+            [floatingPanel setLevel:NSFloatingWindowLevel];
+            [self updateMenuStates];
+        }
 #endif
     }
 }
