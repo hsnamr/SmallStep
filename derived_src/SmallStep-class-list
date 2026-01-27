@@ -1,1 +1,1 @@
-("SSConcurrency", "SSFileDialog", "SSFileSystem", "SSPlatform", "SSWindowStyle", "SSLinuxPlatform")
+("SSApplicationMenu", "SSConcurrency", "SSFileDialog", "SSFileSystem", "SSPlatform", "SSWindowStyle", "SSLinuxPlatform")

@@ -16,29 +16,14 @@
 #import <AppKit/AppKit.h>
 #endif
 
-@interface SSApplicationMenu () {
-#if defined(__GNUSTEP__) || defined(__linux__)
-    NSPanel *floatingPanel;
-    NSView *containerView;
-    NSScrollView *scrollView;
-#endif
-    NSMenu *mainMenu;
-    NSMenu *fileMenu;
-    NSMenu *decodeMenu;
-    NSMenu *encodeMenu;
-    NSMenu *distortionMenu;
-    NSMenu *testingMenu;
-    NSMenu *libraryMenu;
-}
-
-@end
-
 @implementation SSApplicationMenu
+
+@synthesize delegate;
 
 - (instancetype)initWithDelegate:(id<SSApplicationMenuDelegate>)delegate {
     self = [super init];
     if (self) {
-        _delegate = delegate;
+        self.delegate = delegate;
     }
     return self;
 }

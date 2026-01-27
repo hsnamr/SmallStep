@@ -20,6 +20,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// On GNUstep/Linux: Creates a floating panel with buttons
 @interface SSApplicationMenu : NSObject {
     id<SSApplicationMenuDelegate> delegate;
+    NSMenu *mainMenu;
+    NSMenu *fileMenu;
+    NSMenu *decodeMenu;
+    NSMenu *encodeMenu;
+    NSMenu *distortionMenu;
+    NSMenu *testingMenu;
+    NSMenu *libraryMenu;
+#if defined(__GNUSTEP__) || defined(__linux__)
+    NSPanel *floatingPanel;
+    NSView *containerView;
+    NSScrollView *scrollView;
+#endif
 }
 
 /// Delegate for menu actions

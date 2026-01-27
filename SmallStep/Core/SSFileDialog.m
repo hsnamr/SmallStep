@@ -17,6 +17,8 @@
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #elif TARGET_OS_WIN32
 #import <UIKit/UIKit.h>
+#elif defined(__GNUSTEP__) || defined(__linux__)
+#import <AppKit/AppKit.h>
 #endif
 
 
@@ -110,8 +112,12 @@
     // Windows: showModal is not supported, use showWithCompletionHandler instead
     // Return nil to indicate modal is not available
     return nil;
-#else
-    // Linux/GNUstep fallback
+#elif defined(__GNUSTEP__) || defined(__linux__)
+    // Linux/GNUstep: Import AppKit for NSSavePanel/NSOpenPanel
+    #ifndef GNUSTEP
+    #import <AppKit/AppKit.h>
+    #endif
+    
     if (_isSaveDialog) {
         NSSavePanel *savePanel = [NSSavePanel savePanel];
         [savePanel setCanCreateDirectories:_canCreateDirectories];
@@ -141,6 +147,9 @@
         }
         return nil;
     }
+#else
+    // Other platforms: not supported
+    return nil;
 #endif
 }
 
