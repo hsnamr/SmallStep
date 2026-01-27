@@ -105,6 +105,14 @@
     [mainMenu addItem:encodeMenuItem];
     [encodeMenuItem release];
     
+    // Symbologies Menu (will be populated dynamically)
+    symbologiesMenu = [[NSMenu alloc] initWithTitle:@"Symbologies"];
+    
+    NSMenuItem *symbologiesMenuItem = [[NSMenuItem alloc] initWithTitle:@"Symbologies" action:NULL keyEquivalent:@""];
+    [symbologiesMenuItem setSubmenu:symbologiesMenu];
+    [mainMenu addItem:symbologiesMenuItem];
+    [symbologiesMenuItem release];
+    
     // Distortion Menu
     distortionMenu = [[NSMenu alloc] initWithTitle:@"Distortion"];
     NSMenuItem *applyItem = [[NSMenuItem alloc] initWithTitle:@"Apply Distortion" action:@selector(menuApplyDistortion:) keyEquivalent:@""];
@@ -212,6 +220,14 @@
     [encodeMenuItem setSubmenu:encodeMenu];
     [mainMenu addItem:encodeMenuItem];
     [encodeMenuItem release];
+    
+    // Symbologies Menu (will be populated dynamically)
+    symbologiesMenu = [[NSMenu alloc] initWithTitle:@"Symbologies"];
+    
+    NSMenuItem *symbologiesMenuItem = [[NSMenuItem alloc] initWithTitle:@"Symbologies" action:NULL keyEquivalent:@""];
+    [symbologiesMenuItem setSubmenu:symbologiesMenu];
+    [mainMenu addItem:symbologiesMenuItem];
+    [symbologiesMenuItem release];
     
     // Distortion Menu
     distortionMenu = [[NSMenu alloc] initWithTitle:@"Distortion"];
@@ -525,11 +541,91 @@
     }
 }
 
+- (void)menuSelectSymbology:(id)sender {
+    if ([sender isKindOfClass:[NSMenuItem class]]) {
+        NSMenuItem *item = (NSMenuItem *)sender;
+        int symbologyId = [item tag];
+        
+        // Update checkmarks
+        [self updateSymbologyCheckmarksForSymbology:symbologyId];
+        
+        // Notify delegate
+        if ([self.delegate respondsToSelector:@selector(menuSelectSymbology:)]) {
+            [self.delegate menuSelectSymbology:sender];
+        }
+    }
+}
+
+- (void)populateSymbologiesMenu {
+    if (!symbologiesMenu) {
+        return;
+    }
+    
+    // Clear existing items
+    [symbologiesMenu removeAllItems];
+    
+    // Get symbologies from delegate
+    if ([self.delegate respondsToSelector:@selector(getSupportedSymbologies)]) {
+        NSArray *symbologies = [self.delegate getSupportedSymbologies];
+        
+        if (symbologies && symbologies.count > 0) {
+            NSInteger i;
+            for (i = 0; i < symbologies.count; i++) {
+                NSDictionary *symbology = [symbologies objectAtIndex:i];
+                if (!symbology) continue;
+                
+                NSString *name = [symbology objectForKey:@"name"];
+                NSNumber *symbologyId = [symbology objectForKey:@"id"];
+                
+                if (name && name.length > 0 && symbologyId) {
+                    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:name 
+                                                                  action:@selector(menuSelectSymbology:) 
+                                                           keyEquivalent:@""];
+                    [item setTarget:self];
+                    [item setTag:[symbologyId intValue]];
+                    [item setState:NSOffState]; // Initially unchecked
+                    [symbologiesMenu addItem:item];
+                    [item release];
+                }
+            }
+        }
+    }
+    
+    // Update checkmarks after populating
+    [self updateSymbologyCheckmarks];
+}
+
+- (void)updateSymbologyCheckmarks {
+    // Get current symbology from delegate
+    int currentSymbology = -1;
+    if ([self.delegate respondsToSelector:@selector(getCurrentSymbology)]) {
+        currentSymbology = [self.delegate getCurrentSymbology];
+    }
+    
+    [self updateSymbologyCheckmarksForSymbology:currentSymbology];
+}
+
+- (void)updateSymbologyCheckmarksForSymbology:(int)symbologyId {
+    if (!symbologiesMenu) {
+        return;
+    }
+    
+    NSArray *items = [symbologiesMenu itemArray];
+    for (NSMenuItem *item in items) {
+        if ([item tag] == symbologyId) {
+            [item setState:NSOnState]; // Checkmark
+        } else {
+            [item setState:NSOffState]; // No checkmark
+        }
+    }
+}
+
 - (void)dealloc {
     [mainMenu release];
     [fileMenu release];
     [decodeMenu release];
     [encodeMenu release];
+    [symbologiesMenu release];
     [distortionMenu release];
     [testingMenu release];
     [libraryMenu release];

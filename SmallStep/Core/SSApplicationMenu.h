@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSMenu *fileMenu;
     NSMenu *decodeMenu;
     NSMenu *encodeMenu;
+    NSMenu *symbologiesMenu;
     NSMenu *distortionMenu;
     NSMenu *testingMenu;
     NSMenu *libraryMenu;
@@ -40,6 +41,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Update menu item states (enabled/disabled)
 - (void)updateMenuStates;
+
+/// Populate symbologies menu (call after encoder is available)
+- (void)populateSymbologiesMenu;
+
+/// Update symbology checkmarks (call when selection changes)
+- (void)updateSymbologyCheckmarks;
 
 /// Show the menu (on platforms that use floating panels)
 - (void)showMenu;
@@ -65,6 +72,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Encode menu actions
 - (void)menuEncodeBarcode:(id)sender;
+
+// Symbologies menu actions
+- (void)menuSelectSymbology:(id)sender;
+
+// Symbology queries
+- (NSArray *)getSupportedSymbologies;
+- (int)getCurrentSymbology;
 
 // Distortion menu actions
 - (void)menuApplyDistortion:(id)sender;
