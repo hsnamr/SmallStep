@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Cross-platform application menu abstraction
 /// On macOS: Uses the global menu bar (NSApp mainMenu)
-/// On GNUstep/Linux: Creates a floating panel with buttons
+/// On GNUstep/Linux: Uses the main menu (NSApp setMainMenu)
 @interface SSApplicationMenu : NSObject {
     id<SSApplicationMenuDelegate> delegate;
     NSMenu *mainMenu;
@@ -27,11 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
     NSMenu *distortionMenu;
     NSMenu *testingMenu;
     NSMenu *libraryMenu;
-#if defined(__GNUSTEP__) || defined(__linux__)
-    NSPanel *floatingPanel;
-    NSView *containerView;
-    NSScrollView *scrollView;
-#endif
 }
 
 /// Delegate for menu actions
