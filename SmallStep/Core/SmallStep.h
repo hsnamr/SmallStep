@@ -24,6 +24,13 @@
 // Application menu
 #import "SSApplicationMenu.h"
 
+// App lifecycle (desktop + iOS)
+#import "SSAppDelegate.h"
+#import "SSHostApplication.h"
+
+// Generic desktop main menu
+#import "SSMainMenu.h"
+
 // Version
 FOUNDATION_EXPORT double SmallStepVersionNumber;
 FOUNDATION_EXPORT const unsigned char SmallStepVersionString[];

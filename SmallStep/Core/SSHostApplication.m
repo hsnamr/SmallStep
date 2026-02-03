@@ -1,0 +1,101 @@
+//
+//  SSHostApplication.m
+//  SmallStep
+//
+//  Cross-platform application host implementation.
+//
+
+#import "SSHostApplication.h"
+
+#if !TARGET_OS_IPHONE
+
+#pragma mark - Desktop (GNUStep / macOS): NSApplication adapter
+
+static SSHostApplicationAdapter *s_desktopAdapter = nil;
+
+@interface SSHostApplicationAdapter : NSObject <NSApplicationDelegate>
+@property (nonatomic, weak) id<SSAppDelegate> appDelegate;
+@end
+
+@implementation SSHostApplicationAdapter
+
+- (void)applicationWillFinishLaunching:(NSNotification *)notification {
+    (void)notification;
+    if ([_appDelegate respondsToSelector:@selector(applicationWillFinishLaunching)]) {
+        [_appDelegate applicationWillFinishLaunching];
+    }
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)notification {
+    (void)notification;
+    if ([_appDelegate respondsToSelector:@selector(applicationDidFinishLaunching)]) {
+        [_appDelegate applicationDidFinishLaunching];
+    }
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    (void)notification;
+    if ([_appDelegate respondsToSelector:@selector(applicationWillTerminate)]) {
+        [_appDelegate applicationWillTerminate];
+    }
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(id)sender {
+    (void)sender;
+    if ([_appDelegate respondsToSelector:@selector(applicationShouldTerminateAfterLastWindowClosed:)]) {
+        return [_appDelegate applicationShouldTerminateAfterLastWindowClosed:sender];
+    }
+    return YES;
+}
+
+@end
+
+#endif
+
+#pragma mark - SSHostApplication
+
+static id<SSAppDelegate> g_appDelegate = nil;
+
+@implementation SSHostApplication
+
++ (instancetype)sharedHostApplication {
+    static SSHostApplication *shared = nil;
+    if (shared == nil) {
+        shared = [[self alloc] init];
+    }
+    return shared;
+}
+
++ (void)setAppDelegate:(id<SSAppDelegate>)delegate {
+    g_appDelegate = delegate;
+    [self sharedHostApplication].appDelegate = delegate;
+}
+
++ (nullable id<SSAppDelegate>)appDelegate {
+    return g_appDelegate;
+}
+
++ (void)runWithDelegate:(id<SSAppDelegate>)delegate {
+    [self setAppDelegate:delegate];
+
+#if TARGET_OS_IPHONE
+    // On iOS the app uses UIApplicationMain; the app delegate must forward to delegate.
+    // So we only store the delegate here. Do not start a run loop.
+    (void)delegate;
+#else
+    NSApplication *app = [NSApplication sharedApplication];
+    if (s_desktopAdapter == nil) {
+        s_desktopAdapter = [[SSHostApplicationAdapter alloc] init];
+    }
+    s_desktopAdapter.appDelegate = delegate;
+    [app setDelegate:s_desktopAdapter];
+    [app run];
+#endif
+}
+
+- (void)setAppDelegate:(id<SSAppDelegate>)delegate {
+    _appDelegate = delegate;
+    g_appDelegate = delegate;
+}
+
+@end
