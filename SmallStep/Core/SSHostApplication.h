@@ -15,7 +15,17 @@
 
 #import "SSAppDelegate.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#if defined(GNUSTEP)
+#  define SS_NULLABLE
+#  define SS_ASSUME_NONNULL_BEGIN
+#  define SS_ASSUME_NONNULL_END
+#else
+#  define SS_NULLABLE nullable
+#  define SS_ASSUME_NONNULL_BEGIN NS_ASSUME_NONNULL_BEGIN
+#  define SS_ASSUME_NONNULL_END NS_ASSUME_NONNULL_END
+#endif
+
+SS_ASSUME_NONNULL_BEGIN
 
 /// Cross-platform application host.
 /// On desktop (GNUStep/macOS): call runWithDelegate: to start NSApplication and forward lifecycle to your SSAppDelegate.
@@ -26,7 +36,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedHostApplication;
 
 /// App delegate (your cross-platform logic). Set before run (desktop) or before UIApplicationMain (iOS).
+#if defined(GNUSTEP)
+@property (nonatomic, assign) id<SSAppDelegate> appDelegate;
+#else
 @property (nonatomic, weak, nullable) id<SSAppDelegate> appDelegate;
+#endif
 
 /// On desktop (GNUStep/macOS): sets appDelegate, sets up NSApplication delegate, and runs the app. Does not return until app quits.
 /// On iOS: only sets appDelegate; use UIApplicationMain and forward from your UIApplicationDelegate to appDelegate.
@@ -36,8 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setAppDelegate:(id<SSAppDelegate>)delegate;
 
 /// Get current app delegate.
-+ (nullable id<SSAppDelegate>)appDelegate;
++ (id<SSAppDelegate>)appDelegate;
 
 @end
 
-NS_ASSUME_NONNULL_END
+SS_ASSUME_NONNULL_END

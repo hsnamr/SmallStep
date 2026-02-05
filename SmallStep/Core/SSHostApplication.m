@@ -66,13 +66,9 @@ static SSHostApplicationAdapter *s_desktopAdapter = nil;
 static id<SSAppDelegate> g_appDelegate = nil;
 
 @implementation SSHostApplication
-#if defined(GNUSTEP) && !__has_feature(objc_arc)
 @dynamic appDelegate;
 + (id<SSAppDelegate>)appDelegate { return g_appDelegate; }
 - (id<SSAppDelegate>)appDelegate { return g_appDelegate; }
-#else
-@synthesize appDelegate = _appDelegate;
-#endif
 
 + (instancetype)sharedHostApplication {
     static SSHostApplication *shared = nil;
@@ -84,14 +80,8 @@ static id<SSAppDelegate> g_appDelegate = nil;
 
 + (void)setAppDelegate:(id<SSAppDelegate>)delegate {
     g_appDelegate = delegate;
-    [self sharedHostApplication].appDelegate = delegate;
+    [[self sharedHostApplication] setAppDelegate:delegate];
 }
-
-#if !defined(GNUSTEP) || __has_feature(objc_arc)
-+ (nullable id<SSAppDelegate>)appDelegate {
-    return g_appDelegate;
-}
-#endif
 
 + (void)runWithDelegate:(id<SSAppDelegate>)delegate {
     [self setAppDelegate:delegate];
@@ -112,9 +102,6 @@ static id<SSAppDelegate> g_appDelegate = nil;
 }
 
 - (void)setAppDelegate:(id<SSAppDelegate>)delegate {
-#if !defined(GNUSTEP) || __has_feature(objc_arc)
-    _appDelegate = delegate;
-#endif
     g_appDelegate = delegate;
 }
 

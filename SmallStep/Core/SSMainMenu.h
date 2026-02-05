@@ -12,7 +12,15 @@
 #import <AppKit/AppKit.h>
 #endif
 
-NS_ASSUME_NONNULL_BEGIN
+#if defined(GNUSTEP)
+#  define SS_ASSUME_NONNULL_BEGIN
+#  define SS_ASSUME_NONNULL_END
+#else
+#  define SS_ASSUME_NONNULL_BEGIN NS_ASSUME_NONNULL_BEGIN
+#  define SS_ASSUME_NONNULL_END SS_ASSUME_NONNULL_END
+#endif
+
+SS_ASSUME_NONNULL_BEGIN
 
 #if !TARGET_OS_IPHONE
 
@@ -34,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) SEL action;
 @property (nonatomic, copy) NSString *keyEquivalent;  // e.g. @"1", @"q"
 @property (nonatomic, assign) NSUInteger keyEquivalentModifierMask;  // e.g. NSControlKeyMask, NSCommandKeyMask
-+ (instancetype)itemWithTitle:(NSString *)title action:(SEL)action keyEquivalent:(NSString *)keyEquiv modifierMask:(NSUInteger)mask target:(nullable id)target;
++ (instancetype)itemWithTitle:(NSString *)title action:(SEL)action keyEquivalent:(NSString *)keyEquiv modifierMask:(NSUInteger)mask target:(id)target;
 @end
 
 /// Build and install a simple app menu (one submenu with items + optional Quit).
@@ -53,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param items Array of SSMainMenuItem (e.g. Library, Vocabulary, Settings, ...)
 /// @param quitTitle Title for Quit item (e.g. @"Quit Xenolexia")
 /// @param quitKeyEquivalent e.g. @"q"
-- (void)buildMenuWithItems:(NSArray<SSMainMenuItem *> *)items
+- (void)buildMenuWithItems:(NSArray *)items
                  quitTitle:(NSString *)quitTitle
          quitKeyEquivalent:(NSString *)quitKeyEquivalent;
 
@@ -64,4 +72,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 #endif
 
-NS_ASSUME_NONNULL_END
+SS_ASSUME_NONNULL_END

@@ -4,8 +4,8 @@ All notable changes to SmallStep will be documented in this file.
 
 ## [Unreleased]
 
-### Added
-- **NSView+SSTag** (GNUstep only): Category providing `-setTag:`, `-tag`, and `-viewWithTag:` for `NSView` via associated objects, so apps (e.g. SmallMarkdown, SmallBarcoder) can use `[view setTag: N]` and `[view viewWithTag: N]` without `respondsToSelector:` checks. On macOS these methods exist natively; the category is compiled only when `!defined(__APPLE__)`.
+### Removed
+- **NSView+SSTag**: Removed GNUstep workaround; `NSView` now implements `-setTag:`, `-tag`, and `-viewWithTag:` natively on supported platforms.
 
 ## [1.0.0] - 2026-01-26
 

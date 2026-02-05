@@ -45,7 +45,7 @@
 @synthesize appName;
 #endif
 
-- (void)buildMenuWithItems:(NSArray<SSMainMenuItem *> *)items
+- (void)buildMenuWithItems:(NSArray *)items
                  quitTitle:(NSString *)quitTitle
          quitKeyEquivalent:(NSString *)quitKeyEquivalent {
     NSString *appName = _appName.length ? _appName : @"App";
