@@ -31,5 +31,7 @@ SmallStep_OBJC_FILES = \
 	SmallStep/Platform/Linux/SSLinuxPlatform.m
 
 SmallStep_INCLUDE_DIRS = -I. -ISmallStep/Core -ISmallStep/Platform/Linux
+SmallStep_LIBRARIES_DEPEND_UPON = -lobjc
+SmallStep_ADDITIONAL_LDFLAGS = -lobjc
 
 include $(GNUSTEP_MAKEFILES)/framework.make
