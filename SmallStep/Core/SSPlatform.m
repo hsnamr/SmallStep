@@ -24,6 +24,8 @@
     return SSPlatformTypeiOS;
 #elif SS_PLATFORM_LINUX
     return SSPlatformTypeLinux;
+#elif SS_PLATFORM_WINDOWS
+    return SSPlatformTypeWindows;
 #else
     return SSPlatformTypeUnknown;
 #endif
@@ -53,6 +55,8 @@
             return @"iOS";
         case SSPlatformTypeLinux:
             return @"Linux";
+        case SSPlatformTypeWindows:
+            return @"Windows";
         default:
             return @"Unknown";
     }
