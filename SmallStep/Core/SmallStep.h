@@ -31,6 +31,9 @@
 // Generic desktop main menu
 #import "SSMainMenu.h"
 
+// GNUstep/AppKit compatibility (NSView setTag:/tag/viewWithTag:)
+#import "NSView+SSTag.h"
+
 // Version
 FOUNDATION_EXPORT double SmallStepVersionNumber;
 FOUNDATION_EXPORT const unsigned char SmallStepVersionString[];
