@@ -1,0 +1,70 @@
+# SmallStep static library build and install for xenolexia-objc
+# Usage: source GNUstep.sh; make -f Makefile.install [install DESTDIR=/path/to/xenolexia-objc]
+# Builds libSmallStep.a; install copies headers to DESTDIR/include, lib to DESTDIR/lib
+# Note: SmallStep headers use nullable/weak; if build fails, use clang or a compiler that supports them.
+
+SHELL = /bin/bash
+SRC = SmallStep
+CORE = $(SRC)/Core
+PLATFORM_LINUX = $(SRC)/Platform/Linux
+
+HEADERS = \
+	$(CORE)/SmallStep.h \
+	$(CORE)/SSPlatform.h \
+	$(CORE)/SSFileSystem.h \
+	$(CORE)/SSWindowStyle.h \
+	$(CORE)/SSConcurrency.h \
+	$(CORE)/SSFileDialog.h \
+	$(CORE)/SSApplicationMenu.h \
+	$(CORE)/SSAppDelegate.h \
+	$(CORE)/SSHostApplication.h \
+	$(CORE)/SSMainMenu.h \
+	$(PLATFORM_LINUX)/SSLinuxPlatform.h
+
+OBJC_SRCS = \
+	$(CORE)/SmallStep.m \
+	$(CORE)/SSPlatform.m \
+	$(CORE)/SSFileSystem.m \
+	$(CORE)/SSWindowStyle.m \
+	$(CORE)/SSConcurrency.m \
+	$(CORE)/SSFileDialog.m \
+	$(CORE)/SSApplicationMenu.m \
+	$(CORE)/SSHostApplication.m \
+	$(CORE)/SSMainMenu.m \
+	$(PLATFORM_LINUX)/SSLinuxPlatform.m
+
+LIB_NAME = libSmallStep.a
+OBJ_DIR = obj.install
+DESTDIR ?= .
+
+# Prefer clang for nullable/weak support; override with OBJC=... if needed
+OBJC ?= $(shell which clang >/dev/null 2>&1 && echo "clang -x objective-c" || echo "$(shell gnustep-config --variable=CC 2>/dev/null || echo gcc) -x objective-c")
+OBJCFLAGS ?= $(shell gnustep-config --objc-flags 2>/dev/null) -fno-strict-aliasing -fPIC
+# Clang needs GCC's objc runtime include path for <objc/objc.h>
+OBJC_RUNTIME_INC := $(shell for d in /usr/lib/gcc/x86_64-linux-gnu/*/include /usr/lib/gcc/*/*/include; do [ -f "$$d/objc/objc.h" ] 2>/dev/null && echo "$$d" && break; done)
+INCLUDES = -I. -I$(CORE) -I$(PLATFORM_LINUX) $(if $(OBJC_RUNTIME_INC),-I$(OBJC_RUNTIME_INC))
+AR ?= ar
+RANLIB ?= ranlib
+
+OBJS = $(patsubst %.m,$(OBJ_DIR)/%.o,$(OBJC_SRCS))
+
+.PHONY: all install clean
+
+all: $(LIB_NAME)
+
+$(LIB_NAME): $(OBJS)
+	$(AR) cr $@ $^
+	$(RANLIB) $@
+
+$(OBJ_DIR)/%.o: %.m
+	@mkdir -p $(dir $@)
+	$(OBJC) $(INCLUDES) $(OBJCFLAGS) -c -o $@ $<
+
+install: all
+	@mkdir -p $(DESTDIR)/include $(DESTDIR)/lib
+	cp $(HEADERS) $(DESTDIR)/include/
+	cp $(LIB_NAME) $(DESTDIR)/lib/
+	@echo "Installed SmallStep: headers -> $(DESTDIR)/include, lib -> $(DESTDIR)/lib"
+
+clean:
+	rm -rf $(OBJ_DIR) $(LIB_NAME)

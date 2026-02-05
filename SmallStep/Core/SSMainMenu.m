@@ -12,6 +12,19 @@
 #import "SSPlatform.h"
 
 @implementation SSMainMenuItem
+#if defined(GNUSTEP) && !__has_feature(objc_arc)
+@synthesize title = _title;
+@synthesize action = _action;
+@synthesize keyEquivalent = _keyEquivalent;
+@synthesize keyEquivalentModifierMask = _keyEquivalentModifierMask;
+@synthesize target = _target;
+#else
+@synthesize title;
+@synthesize action;
+@synthesize keyEquivalent;
+@synthesize keyEquivalentModifierMask;
+@synthesize target;
+#endif
 
 + (instancetype)itemWithTitle:(NSString *)title action:(SEL)action keyEquivalent:(NSString *)keyEquiv modifierMask:(NSUInteger)mask target:(id)target {
     SSMainMenuItem *item = [[self alloc] init];
@@ -26,6 +39,11 @@
 @end
 
 @implementation SSMainMenu
+#if defined(GNUSTEP) && !__has_feature(objc_arc)
+@synthesize appName = _appName;
+#else
+@synthesize appName;
+#endif
 
 - (void)buildMenuWithItems:(NSArray<SSMainMenuItem *> *)items
                  quitTitle:(NSString *)quitTitle

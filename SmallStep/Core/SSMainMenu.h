@@ -18,17 +18,33 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Descriptor for one menu item (title, action, key equivalent, optional modifier mask).
 @interface SSMainMenuItem : NSObject
+#if defined(GNUSTEP) && !__has_feature(objc_arc)
+{
+    NSString *_title;
+    SEL _action;
+    NSString *_keyEquivalent;
+    NSUInteger _keyEquivalentModifierMask;
+    id _target;  /* assign for GNUStep (no weak runtime) */
+}
+@property (nonatomic, assign) id target;  /* assign for GNUStep */
+#else
+@property (nonatomic, weak) id target;
+#endif
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign) SEL action;
 @property (nonatomic, copy) NSString *keyEquivalent;  // e.g. @"1", @"q"
 @property (nonatomic, assign) NSUInteger keyEquivalentModifierMask;  // e.g. NSControlKeyMask, NSCommandKeyMask
-@property (nonatomic, weak) id target;  // optional; if nil, first responder or app delegate
 + (instancetype)itemWithTitle:(NSString *)title action:(SEL)action keyEquivalent:(NSString *)keyEquiv modifierMask:(NSUInteger)mask target:(nullable id)target;
 @end
 
 /// Build and install a simple app menu (one submenu with items + optional Quit).
 /// Use on desktop (GNUStep/macOS) to avoid duplicating NSMenu code per app.
 @interface SSMainMenu : NSObject
+#if defined(GNUSTEP) && !__has_feature(objc_arc)
+{
+    NSString *_appName;
+}
+#endif
 
 /// App name shown in menu bar (e.g. @"Xenolexia").
 @property (nonatomic, copy) NSString *appName;
