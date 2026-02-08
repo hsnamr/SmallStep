@@ -19,6 +19,9 @@ SmallStep provides a unified API for common platform-specific operations, allowi
 - Detect current platform at runtime
 - Platform-specific utilities and helpers
 
+### Canvas (AppKit / GNUstep)
+- **CanvasView**: Bitmap view with pencil/eraser tools, used by SmallPaint and SmallPhotoViewer. Optional; requires AppKit/gnustep-gui when linked.
+
 ### File System Operations
 - Unified file system API across all platforms
 - Platform-appropriate directory handling:
@@ -149,6 +152,7 @@ SmallStep/
 ├── Core/                    # Core platform abstraction
 │   ├── SSPlatform.h/m       # Platform detection
 │   ├── SSFileSystem.h/m     # File system operations
+│   ├── CanvasView.h/m       # Bitmap canvas (pencil/eraser; AppKit)
 │   └── SmallStep.h          # Main header
 └── Platform/                # Platform-specific implementations
     ├── macOS/               # macOS-specific code
